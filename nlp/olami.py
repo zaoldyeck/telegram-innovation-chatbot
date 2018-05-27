@@ -63,5 +63,13 @@ class Olami:
 
     def intent_detection(self, nli_obj):
         type_ = nli_obj['type']
-        reply = nli_obj['data_obj'][0]['url'] if type_ == 'kkbox' else nli_obj['desc_obj']['result']
+        data = nli_obj['data_obj'][0]
+        reply = {
+            'kkbox': lambda: data['url'],
+            'baike': lambda: data['description'],
+            'news': lambda: data['detail'],
+            'joke': lambda: data['content'],
+            'cooking': lambda: data['content'],
+            'selection': lambda: data.get('detail', '對不起，你說的我還不懂，能換個說法嗎？')
+        }.get(type_, lambda: '對不起，你說的我還不懂，能換個說法嗎？')()
         return reply
