@@ -1,0 +1,11 @@
+-i https://pypi.org/simple
+certifi==2018.4.16
+click==6.7
+flask==1.0.2
+future==0.16.0
+gunicorn==19.8.1
+itsdangerous==0.24
+jinja2==2.10
+markupsafe==1.0
+python-telegram-bot==10.1.0
+werkzeug==0.14.1

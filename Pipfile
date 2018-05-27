@@ -1,0 +1,14 @@
+[[source]]
+url = "https://github.com/zaoldyeck/kkbox-telegram-bot"
+verify_ssl = true
+name = "kkbox-telegram-bot"
+
+[packages]
+python-telegram-bot = "*"
+flask = "*"
+gunicorn = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.6"
