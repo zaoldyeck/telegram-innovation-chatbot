@@ -1,5 +1,5 @@
 [[source]]
-url = "https://github.com/zaoldyeck/kkbox-telegram-bot"
+url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "kkbox-telegram-bot"
 
@@ -7,6 +7,7 @@ name = "kkbox-telegram-bot"
 python-telegram-bot = "*"
 flask = "*"
 gunicorn = "*"
+requests = "*"
 
 [dev-packages]
 
