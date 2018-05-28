@@ -32,4 +32,4 @@ def webhook_handler():
 
 if __name__ == "__main__":
     _set_webhook()
-    app.run()
+    app.run(debug=True)

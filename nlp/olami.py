@@ -62,14 +62,30 @@ class Olami:
         return json.dumps(obj)
 
     def intent_detection(self, nli_obj):
+        def handle_selection_type(_type):
+            _reply = {
+                'news': lambda: desc['result'] + '\n\n' + '\n'.join(
+                    str(index + 1) + '. ' + el['title'] for index, el in enumerate(data)),
+                'poem': lambda: desc['result'] + '\n\n' + '\n'.join(
+                    str(index + 1) + '. ' + el['poem_name'] + '，作者：' + el['author'] for index, el in
+                    enumerate(data)),
+                'cooking': lambda: desc['result'] + '\n\n' + '\n'.join(
+                    str(index + 1) + '. ' + el['name'] for index, el in
+                    enumerate(data))
+            }.get(_type, lambda: '對不起，你說的我還不懂，能換個說法嗎？')()
+            return _reply
+
         type_ = nli_obj['type']
-        data = nli_obj['data_obj'][0]
+        desc = nli_obj['desc_obj']
+        data = nli_obj.get('data_obj', [])
+
         reply = {
-            'kkbox': lambda: data['url'],
-            'baike': lambda: data['description'],
-            'news': lambda: data['detail'],
-            'joke': lambda: data['content'],
-            'cooking': lambda: data['content'],
-            'selection': lambda: data.get('detail', '對不起，你說的我還不懂，能換個說法嗎？')
-        }.get(type_, lambda: '對不起，你說的我還不懂，能換個說法嗎？')()
+            'kkbox': lambda: data[0]['url'],
+            'baike': lambda: data[0]['description'],
+            'news': lambda: data[0]['detail'],
+            'joke': lambda: data[0]['content'],
+            'cooking': lambda: data[0]['content'],
+            'selection': lambda: handle_selection_type(desc['type'])
+        }.get(type_, lambda: desc['result'])()
+
         return reply
