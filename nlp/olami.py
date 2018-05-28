@@ -3,6 +3,7 @@ import json
 import logging
 import time
 from hashlib import md5
+from api.kkbox import KKBOX
 
 import requests
 
@@ -44,26 +45,20 @@ class Olami:
                   'rq': self._gen_rq(text)}
         if cusid is not None:
             params.update(cusid=cusid)
-
         return params
 
     def _gen_sign(self, api, timestamp_ms):
         data = self.app_secret + 'api=' + api + 'appkey=' + self.app_key + \
                'timestamp=' + str(timestamp_ms) + self.app_secret
-
         return md5(data.encode('ascii')).hexdigest()
 
     def _gen_rq(self, text):
-        obj = {'data_type': 'stt',
-               'data': {
-                   'input_type': self.input_type,
-                   'text': text}}
-
+        obj = {'data_type': 'stt', 'data': {'input_type': self.input_type, 'text': text}}
         return json.dumps(obj)
 
     def intent_detection(self, nli_obj):
-        def handle_selection_type(_type):
-            _reply = {
+        def handle_selection_type(type):
+            reply = {
                 'news': lambda: desc['result'] + '\n\n' + '\n'.join(
                     str(index + 1) + '. ' + el['title'] for index, el in enumerate(data)),
                 'poem': lambda: desc['result'] + '\n\n' + '\n'.join(
@@ -72,21 +67,38 @@ class Olami:
                 'cooking': lambda: desc['result'] + '\n\n' + '\n'.join(
                     str(index + 1) + '. ' + el['name'] for index, el in
                     enumerate(data))
-            }.get(_type, lambda: '對不起，你說的我還不懂，能換個說法嗎？')()
+            }.get(type, lambda: '對不起，你說的我還不懂，能換個說法嗎？')()
+            return reply
+
+        def handle_smart_speaker_type(semantic):
+            type = semantic['modifier'][0].split('_')[2]
+            slots = semantic['slots']
+            kkbox = KKBOX()
+
+            def get_slot_value(key):
+                return next(filter(lambda el: el['name'] == key, slots))['value']
+
+            _reply = {
+                'artist': lambda: kkbox.search(type, get_slot_value('artist_name')),
+                'album': lambda: kkbox.search(type, get_slot_value('album_name')),
+                'track': lambda: kkbox.search(type, get_slot_value('track_name')),
+                'playlist': lambda: kkbox.search(type, get_slot_value('keyword'))
+            }[type]()
             return _reply
 
-        type_ = nli_obj['type']
+        type = nli_obj['type']
         desc = nli_obj['desc_obj']
         data = nli_obj.get('data_obj', [])
 
         reply = {
-            'kkbox': lambda: data[0]['url'],
+            'kkbox': lambda: data[0]['url'] if len(data) > 0 else desc['result'],
             'baike': lambda: data[0]['description'],
             'news': lambda: data[0]['detail'],
             'joke': lambda: data[0]['content'],
             'cooking': lambda: data[0]['content'],
             'selection': lambda: handle_selection_type(desc['type']),
-            'ds': lambda: desc['result'] + '\n請用 /help 指令看看我能怎麼幫助您'
-        }.get(type_, lambda: desc['result'])()
+            'ds': lambda: desc['result'] + '\n請用 /help 指令看看我能怎麼幫助您',
+            'smart_speaker': lambda: handle_smart_speaker_type(nli_obj['semantic'][0])
+        }.get(type, lambda: desc['result'])()
 
         return reply
