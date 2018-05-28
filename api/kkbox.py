@@ -28,7 +28,6 @@ class KKBOX:
                                 headers={'Authorization': 'Bearer ' + self.token})
         response.raise_for_status()
         response_json = response.json()
-        logger.error(response_json)
         result = {
             'artist': lambda: response_json['artists']['data'][0]['url'],
             'album': lambda: response_json['albums']['data'][0]['url'],
