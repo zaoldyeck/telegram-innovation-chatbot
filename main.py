@@ -29,6 +29,7 @@ welcome_message = '親愛的主人，您可以問我\n' \
                   '笑話，例如：「講個笑話」\n' \
                   '故事，例如：「說個故事」\n' \
                   '股票，例如：「台積電的股價」\n' \
+                  '食譜，例如：「蛋炒飯怎麼做」\n' \
                   '聊天，例如：「你好嗎」'
 reply_keyboard_markup = ReplyKeyboardMarkup([['高雄天氣如何'],
                                              ['川普是誰'],
@@ -39,6 +40,7 @@ reply_keyboard_markup = ReplyKeyboardMarkup([['高雄天氣如何'],
                                              ['講個笑話'],
                                              ['說個故事'],
                                              ['台積電的股價'],
+                                             ['蛋炒飯怎麼做'],
                                              ['你好嗎']])
 
 
