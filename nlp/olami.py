@@ -86,7 +86,7 @@ class Olami:
             'joke': lambda: data[0]['content'],
             'cooking': lambda: data[0]['content'],
             'selection': lambda: handle_selection_type(desc['type']),
-            'ds':lambda: desc['result']+'\n請用 /help 指令看看我能怎麼幫助您'
+            'ds': lambda: desc['result'] + '\n請用 /help 指令看看我能怎麼幫助您'
         }.get(type_, lambda: desc['result'])()
 
         return reply

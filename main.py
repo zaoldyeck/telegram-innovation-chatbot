@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 bot = telegram.Bot(token=(config['TELEGRAM']['ACCESS_TOKEN']))
-dispatcher = Dispatcher(bot, None)
 
 welcome_message = '親愛的主人，您可以問我\n' \
                   '天氣，例如：「高雄天氣如何」\n' \
@@ -71,7 +70,6 @@ def help_handler(bot, update):
 def reply_handler(bot, update):
     """Reply message."""
     text = update.message.text
-    logger.error(text)
     reply = Olami().nli(text)
     update.message.reply_text(reply)
 
@@ -82,10 +80,12 @@ def error_handler(bot, update, error):
     update.message.reply_text('對不起主人，我需要多一點時間來處理 Q_Q')
 
 
+dispatcher = Dispatcher(bot, None)
+_set_webhook()
+dispatcher.add_handler(CommandHandler('start', start_handler))
+dispatcher.add_handler(CommandHandler('help', help_handler))
+dispatcher.add_handler(MessageHandler(Filters.text, reply_handler))
+dispatcher.add_error_handler(error_handler)
+
 if __name__ == "__main__":
-    _set_webhook()
-    dispatcher.add_handler(CommandHandler('start', start_handler))
-    dispatcher.add_handler(CommandHandler('help', help_handler))
-    dispatcher.add_handler(MessageHandler(Filters.text, reply_handler))
-    dispatcher.add_error_handler(error_handler)
-    app.run()
+    app.run(debug=True)
