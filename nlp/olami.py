@@ -3,7 +3,6 @@ import json
 import logging
 import time
 from hashlib import md5
-from api.kkbox import KKBOX
 
 import requests
 
@@ -70,22 +69,6 @@ class Olami:
             }.get(type, lambda: '對不起，你說的我還不懂，能換個說法嗎？')()
             return reply
 
-        def handle_music_kkbox_type(semantic):
-            type = semantic['modifier'][0].split('_')[2]
-            slots = semantic['slots']
-            kkbox = KKBOX()
-
-            def get_slot_value(key):
-                return next(filter(lambda el: el['name'] == key, slots))['value']
-
-            _reply = {
-                'artist': lambda: kkbox.search(type, get_slot_value('artist_name')),
-                'album': lambda: kkbox.search(type, get_slot_value('album_name')),
-                'track': lambda: kkbox.search(type, get_slot_value('track_name')),
-                'playlist': lambda: kkbox.search(type, get_slot_value('keyword'))
-            }[type]()
-            return _reply
-
         type = nli_obj['type']
         desc = nli_obj['desc_obj']
         data = nli_obj.get('data_obj', [])
@@ -97,8 +80,7 @@ class Olami:
             'joke': lambda: data[0]['content'],
             'cooking': lambda: data[0]['content'],
             'selection': lambda: handle_selection_type(desc['type']),
-            'ds': lambda: desc['result'] + '\n請用 /help 指令看看我能怎麼幫助您',
-            'music_kkbox': lambda: handle_music_kkbox_type(nli_obj['semantic'][0])
+            'ds': lambda: desc['result'] + '\n請用 /help 指令看看我能怎麼幫助您'
         }.get(type, lambda: desc['result'])()
 
         return reply
