@@ -1,6 +1,5 @@
 import configparser
 import logging
-import sys
 
 import telegram
 from flask import Flask, request
@@ -9,14 +8,19 @@ from telegram.ext import Dispatcher, CommandHandler, MessageHandler, Filters
 
 from nlp.olami import Olami
 
+# Load data from config.ini file
 config = configparser.ConfigParser()
 config.read('config.ini')
+
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Initial Flask app
 app = Flask(__name__)
+
+# Initial bot by Telegram access token
 bot = telegram.Bot(token=(config['TELEGRAM']['ACCESS_TOKEN']))
 
 welcome_message = '親愛的主人，您可以問我\n' \
@@ -44,15 +48,9 @@ reply_keyboard_markup = ReplyKeyboardMarkup([['高雄天氣如何'],
                                              ['你好嗎']])
 
 
-def _set_webhook():
-    status = bot.set_webhook(config['TELEGRAM']['WEBHOOK_URL'])
-    if not status:
-        print('Webhook setup failed')
-        sys.exit(1)
-
-
 @app.route('/hook', methods=['POST'])
 def webhook_handler():
+    """Set route /hook with POST method will trigger this method."""
     if request.method == "POST":
         update = telegram.Update.de_json(request.get_json(force=True), bot)
         dispatcher.process_update(update)
@@ -82,12 +80,16 @@ def error_handler(bot, update, error):
     update.message.reply_text('對不起主人，我需要多一點時間來處理 Q_Q')
 
 
+# New a dispatcher for bot
 dispatcher = Dispatcher(bot, None)
-_set_webhook()
+
+# Add handler for handling message, there are many kinds of message. For this handler, it particular handle text
+# message.
+dispatcher.add_handler(MessageHandler(Filters.text, reply_handler))
 dispatcher.add_handler(CommandHandler('start', start_handler))
 dispatcher.add_handler(CommandHandler('help', help_handler))
-dispatcher.add_handler(MessageHandler(Filters.text, reply_handler))
 dispatcher.add_error_handler(error_handler)
 
 if __name__ == "__main__":
+    # Running server
     app.run(debug=True)

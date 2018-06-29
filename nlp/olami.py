@@ -70,7 +70,7 @@ class Olami:
             }.get(type, lambda: '對不起，你說的我還不懂，能換個說法嗎？')()
             return reply
 
-        def handle_smart_speaker_type(semantic):
+        def handle_music_kkbox_type(semantic):
             type = semantic['modifier'][0].split('_')[2]
             slots = semantic['slots']
             kkbox = KKBOX()
@@ -98,7 +98,7 @@ class Olami:
             'cooking': lambda: data[0]['content'],
             'selection': lambda: handle_selection_type(desc['type']),
             'ds': lambda: desc['result'] + '\n請用 /help 指令看看我能怎麼幫助您',
-            'smart_speaker': lambda: handle_smart_speaker_type(nli_obj['semantic'][0])
+            'music_kkbox': lambda: handle_music_kkbox_type(nli_obj['semantic'][0])
         }.get(type, lambda: desc['result'])()
 
         return reply
