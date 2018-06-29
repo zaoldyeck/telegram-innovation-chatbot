@@ -1,10 +1,11 @@
 # Telegram Innovation Chatbot
-A Telegram Bot powered by [OLAMI](https://tw.olami.ai/) can understand Chinese. And searching for music data due to integrating [KKBOX Open API](https://developer.kkbox.com/).
+A Telegram Bot powered by [OLAMI](https://tw.olami.ai/) can understand Chinese. Has the ability to search music data due to integrating [KKBOX Open API](https://developer.kkbox.com/).
 <br/>
 Try it out via https://t.me/innovation_chatbot
 
 ## Articles
 There are three articles talk about how to build this project.
+<br/>
 [（一）手把手教你打造 Telegram Bot](https://medium.com/@zaoldyeck9970/%E6%89%8B%E6%8A%8A%E6%89%8B%E6%95%99%E4%BD%A0%E6%80%8E%E9%BA%BC%E6%89%93%E9%80%A0-telegram-bot-a7b539c3402a)
 <br/>
 [（二）為 Chatbot 增加 NLP 功能](https://medium.com/@zaoldyeck9970/%E5%88%A9%E7%94%A8-olami-open-api-%E7%82%BA-chatbot-%E5%A2%9E%E5%8A%A0-nlp-%E5%8A%9F%E8%83%BD-e6b37940913d)
