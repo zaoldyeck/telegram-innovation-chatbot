@@ -20,16 +20,23 @@
     1. Log in [KKBOX Developers](https://developer.kkbox.com/)
     2. My Apps => Create new app => fill information => submit
     3. Copy `ID` and `Secret`
-5. Clone this project, fill in config.ini
-    1. `$git clone https://github.com/zaoldyeck/telegram-innovation-chatbot.git`
-    2. Edit config.ini, fill in Telegram Bot `ACCESS_TOKEN`, OLAMI `APP_KEY` / `APP_SECRET`, KKBOX `ID` / `SECRET`
+5. Clone this project, edit config.ini
+    1. `$ git clone https://github.com/zaoldyeck/telegram-innovation-chatbot.git`
+    2. Edit config.ini, fill in Telegram Bot `ACCESS_TOKEN`, OLAMI `APP_KEY` and `APP_SECRET`, KKBOX `ID` and `SECRET`
 6. Deploy program to [Heroku](https://www.heroku.com/)
     1. Log in [Heroku](https://www.heroku.com/) account
     2. New => create new app => fill information => Create app
-    3. Install [Heroku CLI tool](https://devcenter.heroku.com/articles/heroku-cli)
-    4. 
-7. Setting webhook for chatbot
-    1. Get Heroku App url from 
+    3. Install [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli)
+    4. In local Terminal console
+    ```
+    $ cd telegram-innovation-chatbot
+    $ git commit -m "Edit config.ini"
+    $ heroku login
+    $ heroku git:remote -a {your_heroku_app_name}
+    $ git push heroku master
+    ```
+7. Setting chatbot's webhook
+    1. Get Heroku App url from App "Settings" page or "Open app". It should be `https://{$your_heroku_app_name}.herokuapp.com/`, then webhook url is `https://{$your_heroku_app_name}.herokuapp.com/hook`
     2. Open browser and enter `https://api.telegram.org/bot{$token}/setWebhook?url={$webhook_url}`
 
 ## License
