@@ -30,8 +30,7 @@ class Olami:
         response.raise_for_status()
         response_json = response.json()
         if response_json['status'] != 'ok':
-            raise NliStatusError(
-                "NLI responded status != 'ok': {}".format(response_json['status']))
+            raise NliStatusError("NLI responded status != 'ok': {}".format(response_json['status']))
         else:
             nli_obj = response_json['data']['nli'][0]
             return self.intent_detection(nli_obj)
@@ -48,8 +47,8 @@ class Olami:
         return params
 
     def _gen_sign(self, api, timestamp_ms):
-        data = self.app_secret + 'api=' + api + 'appkey=' + self.app_key + \
-               'timestamp=' + str(timestamp_ms) + self.app_secret
+        data = self.app_secret + 'api=' + api + 'appkey=' + self.app_key + 'timestamp=' + \
+               str(timestamp_ms) + self.app_secret
         return md5(data.encode('ascii')).hexdigest()
 
     def _gen_rq(self, text):
@@ -65,8 +64,7 @@ class Olami:
                     str(index + 1) + '. ' + el['poem_name'] + '，作者：' + el['author'] for index, el in
                     enumerate(data)),
                 'cooking': lambda: desc['result'] + '\n\n' + '\n'.join(
-                    str(index + 1) + '. ' + el['name'] for index, el in
-                    enumerate(data))
+                    str(index + 1) + '. ' + el['name'] for index, el in enumerate(data))
             }.get(type, lambda: '對不起，你說的我還不懂，能換個說法嗎？')()
             return reply
 

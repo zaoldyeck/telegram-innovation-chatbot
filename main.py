@@ -64,7 +64,8 @@ def help_handler(bot, update):
 def reply_handler(bot, update):
     """Reply message."""
     text = update.message.text
-    reply = Olami().nli(text)
+    user_id = update.from_user.id
+    reply = Olami().nli(text, user_id)
     update.message.reply_text(reply)
 
 
