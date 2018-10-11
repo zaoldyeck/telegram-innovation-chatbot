@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3556ef8191dbb237d82808dc37488aeff7afc0f549f32d33886fce5eaa5929cf"
+            "sha256": "3fda4fbf791f90129eb554a446a464f4295e98f19b4b6f74144e174af423b33c"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -9,7 +9,7 @@
         },
         "sources": [
             {
-                "name": "kkbox-telegram-bot",
+                "name": "pypi",
                 "url": "https://pypi.org/simple",
                 "verify_ssl": true
             }
