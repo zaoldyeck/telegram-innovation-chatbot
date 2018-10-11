@@ -57,46 +57,49 @@ class Olami:
 
     def intent_detection(self, nli_obj):
         def handle_selection_type(type):
-            reply = {
-                'news': lambda: desc['result'] + '\n\n' + '\n'.join(
-                    str(index + 1) + '. ' + el['title'] for index, el in enumerate(data)),
-                'poem': lambda: desc['result'] + '\n\n' + '\n'.join(
-                    str(index + 1) + '. ' + el['poem_name'] + '，作者：' + el['author'] for index, el in
-                    enumerate(data)),
-                'cooking': lambda: desc['result'] + '\n\n' + '\n'.join(
+            if type == 'news':
+                return desc['result'] + '\n\n' + '\n'.join(
+                    str(index + 1) + '. ' + el['title'] for index, el in enumerate(data))
+            elif type == 'poem':
+                return desc['result'] + '\n\n' + '\n'.join(
+                    str(index + 1) + '. ' + el['poem_name'] + '，作者：' + el['author'] for index, el in enumerate(data))
+            elif type == 'cooking':
+                return desc['result'] + '\n\n' + '\n'.join(
                     str(index + 1) + '. ' + el['name'] for index, el in enumerate(data))
-            }.get(type, lambda: '對不起，你說的我還不懂，能換個說法嗎？')()
-            return reply
+            else:
+                return '對不起，你說的我還不懂，能換個說法嗎？'
 
         def handle_music_kkbox_type(semantic):
-            type = semantic['modifier'][0].split('_')[2]
+            music_type = semantic['modifier'][0].split('_')[2]
             slots = semantic['slots']
             kkbox = KKBOX()
 
-            def get_slot_value(key):
+            def get_slot_value_by_key(key):
                 return next(filter(lambda el: el['name'] == key, slots))['value']
 
-            _reply = {
-                'artist': lambda: kkbox.search(type, get_slot_value('artist_name')),
-                'album': lambda: kkbox.search(type, get_slot_value('album_name')),
-                'track': lambda: kkbox.search(type, get_slot_value('track_name')),
-                'playlist': lambda: kkbox.search(type, get_slot_value('keyword'))
-            }[type]()
-            return _reply
+            key = 'keyword' if music_type == 'playlist' else (music_type + '_name')
+            return kkbox.search(music_type, get_slot_value_by_key(key))
 
         type = nli_obj['type']
         desc = nli_obj['desc_obj']
         data = nli_obj.get('data_obj', [])
 
-        reply = {
-            'kkbox': lambda: data[0]['url'] if len(data) > 0 else desc['result'],
-            'baike': lambda: data[0]['description'],
-            'news': lambda: data[0]['detail'],
-            'joke': lambda: data[0]['content'],
-            'cooking': lambda: data[0]['content'],
-            'selection': lambda: handle_selection_type(desc['type']),
-            'ds': lambda: desc['result'] + '\n請用 /help 指令看看我能怎麼幫助您',
-            'music_kkbox': lambda: handle_music_kkbox_type(nli_obj['semantic'][0])
-        }.get(type, lambda: desc['result'])()
-
-        return reply
+        if type == 'kkbox':
+            id = data[0]['id']
+            return ('https://widget.kkbox.com/v1/?type=song&id=' + id) if len(data) > 0 else desc['result']
+        elif type == 'baike':
+            return data[0]['description']
+        elif type == 'news':
+            return data[0]['detail']
+        elif type == 'joke':
+            return data[0]['content']
+        elif type == 'cooking':
+            return data[0]['content']
+        elif type == 'selection':
+            return handle_selection_type(desc['type'])
+        elif type == 'ds':
+            return desc['result'] + '\n請用 /help 指令看看我能怎麼幫助您'
+        elif type == 'music_kkbox':
+            return handle_music_kkbox_type(nli_obj['semantic'][0])
+        else:
+            return desc['result']
