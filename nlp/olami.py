@@ -89,10 +89,10 @@ class Olami:
             return ('https://widget.kkbox.com/v1/?type=song&id=' + id) if len(data) > 0 else desc['result']
         elif type == 'baike':
             return data[0]['description']
-        elif type == 'news':
-            return data[0]['detail']
         elif type == 'joke':
             return data[0]['content']
+        elif type == 'news':
+            return data[0]['detail']
         elif type == 'cooking':
             return data[0]['content']
         elif type == 'selection':
