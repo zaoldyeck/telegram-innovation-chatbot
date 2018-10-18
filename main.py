@@ -78,7 +78,7 @@ def error_handler(bot, update, error):
 # New a dispatcher for bot
 dispatcher = Dispatcher(bot, None)
 
-# Add handler for handling message, there are many kinds of message. For this handler, it particular handle text
+# Add handlers for handling message, there are many kinds of message. For this handler, it particular handle text
 # message.
 dispatcher.add_handler(MessageHandler(Filters.text, reply_handler))
 dispatcher.add_handler(CommandHandler('start', start_handler))
